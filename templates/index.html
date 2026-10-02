@@ -1,0 +1,34 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero">
+  <div><div class="eyebrow">STUDENT PERFORMANCE CONSOLE</div><h1>Results that read<br><em>at a glance.</em></h1><p>Manage student records, calculate grades automatically, search results and review academic performance from one clean workspace.</p></div>
+  <div class="hero-badge"><span>15</span><small>VEDA TASK</small></div>
+</section>
+
+<section class="stat-grid">
+  <article class="stat-card"><span class="stat-label">Students</span><strong>{{ stats.count }}</strong><small>records managed</small></article>
+  <article class="stat-card accent"><span class="stat-label">Class average</span><strong>{{ stats.average }}%</strong><small>across all subjects</small></article>
+  <article class="stat-card"><span class="stat-label">Pass rate</span><strong>{{ stats.pass_rate }}%</strong><small>40%+ threshold</small></article>
+  <article class="stat-card"><span class="stat-label">Top result</span><strong>{% if stats.top %}{{ stats.top.percentage }}%{% else %}—{% endif %}</strong><small>{% if stats.top %}{{ stats.top.name }}{% else %}No records{% endif %}</small></article>
+</section>
+
+<section class="toolbar">
+  <form class="search" method="get"><span>⌕</span><input name="q" value="{{ query }}" placeholder="Search by name, roll number or course"><button>Search</button>{% if query %}<a href="{{ url_for('index') }}">Clear</a>{% endif %}</form>
+  <a class="button primary" href="{{ url_for('add_student') }}">+ New student</a>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><div><div class="eyebrow">RECORDS</div><h2>Student results</h2></div><span class="count-pill">{{ students|length }} shown</span></div>
+  {% if students %}
+  <div class="table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Semester</th><th>Total</th><th>Percentage</th><th>Grade</th><th>Action</th></tr></thead>
+  <tbody>{% for s in students %}<tr>
+    <td><a class="student-name" href="{{ url_for('student_detail', student_id=s.id) }}">{{ s.name }}</a><small>{{ s.roll_no }} · {{ s.email }}</small></td>
+    <td>{{ s.course }}</td><td>Sem {{ s.semester }}</td><td>{{ s.total }}/500</td>
+    <td><strong>{{ s.percentage }}%</strong></td><td><span class="grade grade-{{ s.grade|replace('+','plus') }}">{{ s.grade }}</span></td>
+    <td><a class="link" href="{{ url_for('edit_student', student_id=s.id) }}">Edit</a></td>
+  </tr>{% endfor %}</tbody></table></div>
+  {% else %}<div class="empty"><div>◎</div><h3>No matching records</h3><p>Try a different search or add a new student.</p></div>{% endif %}
+</section>
+
+<section class="tips"><div><span class="mini-icon">↗</span><div><strong>Automatic grade calculation</strong><p>Marks are validated from 0–100 and grades are derived from the calculated percentage.</p></div></div><div><span class="mini-icon">⌕</span><div><strong>Fast student search</strong><p>Search across name, roll number and course without leaving the dashboard.</p></div></div><div><span class="mini-icon">▦</span><div><strong>Performance summary</strong><p>Class average, pass rate and top result update automatically.</p></div></div></section>
+{% endblock %}

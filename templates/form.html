@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block title %}{{ 'Edit Result' if student else 'Add Result' }}{% endblock %}
+{% block content %}
+<section class="form-head"><div class="eyebrow">{{ 'UPDATE RECORD' if student else 'NEW RECORD' }}</div><h1>{{ 'Edit student result' if student else 'Add a student result' }}</h1><p>Enter student details and five subject marks. GradeFlow validates the marks and calculates the result automatically.</p></section>
+<form class="form-card" method="post">
+  <div class="form-section"><div><span class="step">01</span><h2>Student details</h2></div><div class="form-grid">
+    <label>Roll number<input name="roll_no" required value="{{ student.roll_no if student else '' }}" placeholder="e.g. VTA104"></label>
+    <label>Full name<input name="name" required value="{{ student.name if student else '' }}" placeholder="Student name"></label>
+    <label>Email<input type="email" name="email" required value="{{ student.email if student else '' }}" placeholder="student@example.com"></label>
+    <label>Course<input name="course" required value="{{ student.course if student else '' }}" placeholder="Computer Science"></label>
+    <label>Semester<select name="semester" required>{% for x in range(1,9) %}<option value="{{ x }}" {% if student and student.semester|string == x|string %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label>
+  </div></div>
+  <div class="form-section"><div><span class="step">02</span><h2>Subject marks</h2><p>Enter values from 0 to 100.</p></div><div class="marks-grid">
+    {% for subject in ['Python','Database','Cloud','Web','Security'] %}<label><span>{{ subject }}</span><div class="mark-input"><input type="number" min="0" max="100" name="{{ subject }}" required value="{{ student.marks[subject] if student else '' }}"><b>/ 100</b></div></label>{% endfor %}
+  </div></div>
+  <div class="form-actions"><a class="button ghost" href="{{ url_for('index') }}">Cancel</a><button class="button primary" type="submit">{{ 'Save changes' if student else 'Calculate & Save' }} →</button></div>
+</form>
+{% endblock %}
